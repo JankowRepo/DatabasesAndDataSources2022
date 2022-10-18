@@ -1,0 +1,99 @@
+CREATE TABLE COUNTRIES AS SELECT * FROM HR.COUNTRIES;
+CREATE TABLE DEPARTMENTS AS SELECT * FROM HR.DEPARTMENTS;
+CREATE TABLE EMPLOYEES AS SELECT * FROM HR.EMPLOYEES;
+CREATE TABLE JOB_GRADES AS SELECT * FROM HR.JOB_GRADES;
+CREATE TABLE JOB_HISTORY AS SELECT * FROM HR.JOB_HISTORY;
+CREATE TABLE JOBS AS SELECT * FROM HR.JOBS;
+CREATE TABLE LOCATIONS AS SELECT * FROM HR.LOCATIONS;
+CREATE TABLE REGIONS AS SELECT * FROM HR.REGIONS;
+
+ALTER TABLE job_history
+ADD PRIMARY KEY (employee_id,start_date);
+
+ALTER TABLE countries
+ADD PRIMARY KEY (country_id);
+
+ALTER TABLE departments
+ADD PRIMARY KEY (department_id);
+
+ALTER TABLE employees
+ADD PRIMARY KEY (employee_id);
+
+ALTER TABLE jobs
+ADD PRIMARY KEY (job_id);
+
+ALTER TABLE locations
+ADD PRIMARY KEY (location_id);
+
+ALTER TABLE regions
+ADD PRIMARY KEY (region_id);
+
+ALTER TABLE countries
+ADD FOREIGN KEY (region_id) REFERENCES regions(region_id);
+
+ALTER TABLE departments
+ADD FOREIGN KEY (manager_id) REFERENCES employees(employee_id);
+
+ALTER TABLE departments
+ADD FOREIGN KEY (location_id) REFERENCES locations(location_id);
+
+ALTER TABLE employees
+ADD FOREIGN KEY (job_id) REFERENCES jobs(job_id);
+
+ALTER TABLE employees
+ADD FOREIGN KEY (manager_id) REFERENCES employees(employee_id);
+
+ALTER TABLE employees
+ADD FOREIGN KEY (department_id) REFERENCES departments(department_id);
+
+ALTER TABLE job_history
+ADD FOREIGN KEY (job_id) REFERENCES jobs(job_id);
+
+ALTER TABLE job_history
+ADD FOREIGN KEY (department_id) REFERENCES departments(department_id);
+
+ALTER TABLE locations
+ADD FOREIGN KEY (country_id) REFERENCES countries(country_id);
+
+
+
+
+
+
+SELECT CONCAT(LAST_NAME,Concat(' ',Salary) ) AS Wynagrodzenie 
+    FROM EMPLOYEES 
+    where (department_id=20 or department_id=50) 
+    and salary<=7000 
+    and salary>=2000
+    order by Wynagrodzenie;
+    
+
+SELECT Hire_date, Last_name
+    FROM EMPLOYEES 
+    where manager_id is not null
+    and hire_date > date '2004-12-31'
+    and hire_date < date '2006-01-01'
+    order by &picked_Column;
+    
+             
+SELECT CONCAT(CONCAT(first_name, ' '), last_name) AS name, salary, phone_number
+    FROM employees 
+    WHERE INSTR(last_name, 'e', 3, 1) = 3 
+    AND INSTR(first_name, '&name_path', 1, 1) != 0 
+    ORDER BY name DESC;
+             
+
+Select first_name, Last_name, Round(MONTHS_BETWEEN(sysdate, hire_date)) as miesiace,
+    Case 
+        when Round(MONTHS_BETWEEN(sysdate, hire_date))<150 then '10%'
+        when Round(MONTHS_BETWEEN(sysdate, hire_date))>200 then '30%'
+        else '20%' 
+    end dodatek
+    from employees
+    order by miesiace;
+
+
+Select department_id, sum(salary) as sum_salary, round(avg(salary)) as average_salary
+    from employees
+    where salary>5000
+    Order by average_salary desc;
