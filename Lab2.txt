@@ -97,3 +97,58 @@ Select department_id, sum(salary) as sum_salary, round(avg(salary)) as average_s
     from employees
     where salary>5000
     Order by average_salary desc;
+    
+Select employees.last_name, employees.Department_ID,
+    departments.Department_name, employees.job_id 
+    from Employees join departments 
+        on employees.department_id=departments.department_id 
+    join locations
+        on departments.location_id=locations.location_id
+    where locations.city='Toronto'
+    
+
+Select employees.first_name, employees.last_name 
+    from employees join departments 
+        on employees.department_id=departments.department_id
+    where employees.first_name='Jennifer' 
+        or departments.department_id in (select employees.department_id from employees where employees.first_name='Jennifer')
+    
+
+Select department_name, department_id from departments
+    where department_id not in (select distinct department_id from employees where department_id!=null)
+    
+
+Select e1.first_name, e1.last_name, e1.job_id, d1.department_name, e1.salary,(SELECT grade FROM job_grades WHERE e1.salary BETWEEN min_salary AND max_salary) AS grade
+    from employees e1
+        join departments d1 on e1.department_id=d1.department_id 
+        
+ 
+        
+select first_name, last_name, salary from employees
+    where salary>(select avg(e2.salary) from employees e2)
+    order by salary desc
+    
+
+
+select employee_id, first_name, last_name, salary from employees
+    where department_id in 
+        (select distinct e2.department_id 
+            from employees e2 where e2.last_name like '%u%')
+
+
+
+
+    
+    
+Wyklad 19.10.2022:
+Select last_name,department_id,salary
+    from Employees e1
+    where employees.salary>(Select avg(salary) from employees
+        where e1.department_id=department_id);
+
+
+Select j2.job_title, j1.job_title,j1.min_salary 
+    from jobs j1 Join jobs j2 
+    on j1.min_salary = j2.min_salary
+    where j2.job_title>j1.job_title
+    
