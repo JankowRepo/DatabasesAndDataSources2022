@@ -1,0 +1,107 @@
+set serveroutput on;
+DECLARE 
+    max_numer number(5):=0;
+    department_name departments.department_name%Type:='Education';
+BEGIN
+    SELECT max(departments.department_id) INTO max_numer FROM departments;
+    DBMS_OUTPUT.PUT_LINE(max_numer);
+    insert into departments (department_id, department_name) values (max_numer+10, department_name);
+END;
+
+
+DECLARE 
+    new_location_id number(5):=3000;
+    max_numer number(5):=0;
+    department_name departments.department_name%Type:='Education';
+BEGIN
+    SELECT max(departments.department_id) INTO max_numer FROM departments;
+    UPDATE departments
+    SET location_id=new_location_id
+    WHERE department_id=max_numer; 
+END;
+
+
+CREATE TABLE table_name (column1 varchar(20));
+DECLARE 
+    table_name varchar(50):='Nowa';
+    i number:=1;
+BEGIN
+WHILE i <= 10
+    LOOP
+        if i!=4 and i!=6 then
+            insert into table_name (column1) values (i);
+        end if;
+    i:=i+1;
+    End Loop;
+END;    
+
+
+
+
+DECLARE 
+    selected_row countries%ROWTYPE;
+BEGIN
+    SELECT * INTO selected_row FROM countries where country_id='CA';
+     DBMS_OUTPUT.PUT_LINE(selected_row.country_name || ' has id equal ' || selected_row.region_id );
+END;
+
+
+DECLARE 
+    selected_name varchar(50);
+    i number(5):=10;
+BEGIN
+WHILE i <= 100
+    LOOP
+        select departments.department_name INTO selected_name FROM departments where i=departments.department_id;
+        DBMS_OUTPUT.PUT_LINE(selected_name);
+    i:=i+10;
+    End Loop;
+END;
+
+
+DECLARE 
+    selected_row departments%ROWTYPE;
+    i number(5):=10;
+BEGIN
+WHILE i <= 100
+    LOOP
+        select * INTO selected_row FROM departments where i=departments.department_id;
+        DBMS_OUTPUT.PUT_LINE(selected_row.department_id || ' ' || 
+        selected_row.department_name || ' ' ||
+        selected_row.manager_id || ' ' ||
+        selected_row.location_id);
+    i:=i+10;
+    End Loop;
+END;
+
+
+
+Declare 
+    cursor my_cursor is
+    select salary, last_name from employees where department_id=50;
+    i number(5):=10;
+begin
+for cr in my_cursor loop
+        if cr.salary>3100 then
+            DBMS_OUTPUT.PUT_LINE(cr.last_name || ' nie dawać podwyżki!');
+        else
+            DBMS_OUTPUT.PUT_LINE(cr.last_name || ' dać podwyżkę');
+        end if;
+    End Loop;
+END;
+
+
+Declare 
+    CURSOR my_cursor (low_salary_cape NUMBER, high_salary_cape NUMBER, letter varchar)
+    IS
+        SELECT salary,first_name,last_name
+        FROM employees
+        WHERE (salary BETWEEN low_salary_cape AND high_salary_cape) and ((first_name like '%' || letter || '%') or (first_name like '%' || upper(letter) || '%'));
+begin
+for cr in my_cursor (1000,5000,'a') loop
+        DBMS_OUTPUT.PUT_LINE(cr.first_name || cr.last_name || ' ' || cr.salary);
+    End Loop;
+for cr in my_cursor (5000,20000,'u') loop
+        DBMS_OUTPUT.PUT_LINE(cr.first_name || cr.last_name || ' ' || cr.salary);
+    End Loop;
+END;
